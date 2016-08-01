@@ -1,4 +1,3 @@
-require 'fog'
 require '../../src/clouds/cloud_provider'
 require '../../src/clouds/amazon_web_services'
 require '../../src/clouds/digital_ocean'
@@ -15,10 +14,12 @@ class Main
   end
 
   def test(cloud)
+    puts cloud.to_s
     cloud.destroy_nodes
     cloud.list_nodes
     cloud.create_node
     cloud.list_nodes
+    puts ''
   end
 
 end

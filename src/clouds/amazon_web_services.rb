@@ -1,3 +1,5 @@
+require '../../src/clouds/cloud_provider'
+require 'fog/aws'
 class AmazonWebServices < CloudProvider
 
   def initialize

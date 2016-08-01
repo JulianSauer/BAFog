@@ -1,5 +1,3 @@
-require 'fog'
-
 class CloudProvider
 
   @user
@@ -20,7 +18,9 @@ class CloudProvider
   end
 
   def create_node
+    puts 'Creating node...'
     @connection.servers.create(:name => get_node_name)
+    puts 'done.'
   end
 
   def destroy_nodes
@@ -35,7 +35,10 @@ class CloudProvider
 
   def list_nodes
     begin
-      puts @connection.servers.to_s
+      puts 'Nodes:'
+      for server in @connection.servers
+        puts '  ' + server.id.to_s
+      end
     rescue NameError
       puts 'Cannot list nodes'
     end

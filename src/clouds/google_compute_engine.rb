@@ -1,3 +1,6 @@
+require '../../src/clouds/cloud_provider'
+require 'fog/google'
+
 class GoogleComputeEngine < CloudProvider
 
   def initialize

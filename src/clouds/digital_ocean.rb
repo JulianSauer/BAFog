@@ -1,3 +1,6 @@
+require '../../src/clouds/cloud_provider'
+require 'fog/digitalocean/compute_v2'
+require 'fog'
 class DigitalOcean < CloudProvider
 
   def initialize
@@ -6,31 +9,26 @@ class DigitalOcean < CloudProvider
 
   def get_connection
     @connection = Fog::Compute.new({
-                                       :provider => @provider,
+                                       :provider => 'DigitalOcean',
                                        :version => 'V2',
-                                       :digitalocean_token => @password
+                                       :digitalocean_token => '2f1573cb2355bf24e27460831b5f8b901e3bb6197f0b11d6ba78e98d22b0b0a1',
                                    })
   end
 
   def create_node
-    @connection.servers.create(:name => get_node_name,
-                               :image => get_image,
-                               :size => get_size,
-                               :region => get_region)
+    puts 'Creating node...'
+    @connection.servers.create({:name => get_node_name, :image => get_image, :size => get_size, :region => get_region})
+    puts 'done.'
   end
 
   def get_image
-    @connection.images.each do |image|
-      if image.distribution.eql? 'Ubuntu'
-        return image.id
-      end
-    end
+    @connection.images[1].id
   end
 
   def get_size
     @connection.flavors.each do |size|
       if size.slug.eql? '512mb'
-        return size
+        return size.slug
       end
     end
   end

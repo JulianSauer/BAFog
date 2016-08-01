@@ -1,4 +1,6 @@
 require 'fog/profitbricks'
+require '../../src/clouds/cloud_provider'
+
 class ProfitBricks < CloudProvider
 
   def initialize
@@ -14,7 +16,16 @@ class ProfitBricks < CloudProvider
   end
 
   def create_node
-    @connection.servers.create(:data_center_id => 'fog', :cores => 1, :ram => 1024, :options => { :serverName => 'FogServer' })
+    puts 'Creating node...'
+    begin
+      datacenter = @connection.datacenters.all.find { |dc| dc.name == 'fog' }
+      @connection.servers.create(:data_center_id => datacenter.id, :cores => 1, :ram => 1024, :options => {:serverName => get_node_name})
+    rescue NameError
+      puts 'Node creation failed.'
+      puts '(Some requirements might have bricked this)'
+      return
+    end
+    puts 'done.'
   end
 
 end
