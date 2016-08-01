@@ -20,19 +20,28 @@ class CloudProvider
   end
 
   def create_node
-    @connection.servers.create(:name => 'fog' + Time.now.strftime('%d%m%y-%H%M'))
+    @connection.servers.create(:name => get_node_name)
   end
 
   def destroy_nodes
-    for server in @connection.servers
-      server.destroy
+    begin
+      for server in @connection.servers
+        server.destroy
+      end
+    rescue NoMethodError, NameError
+      puts 'Cannot delete nodes'
     end
   end
 
   def list_nodes
-    puts @connection.servers.to_s
+    begin
+      puts @connection.servers.to_s
+    rescue NameError
+      puts 'Cannot list nodes'
+    end
   end
 
+  # Helper methods
   def get_value(key)
     file = File.open('../../resources/accounts.txt', 'r')
     file.each_line do |line|
@@ -42,6 +51,10 @@ class CloudProvider
         return value.chomp
       end
     end
+  end
+
+  def get_node_name
+    'fog' + Time.now.strftime('%d%m%y-%H%M')
   end
 
 end
