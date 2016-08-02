@@ -1,6 +1,7 @@
 require '../../src/clouds/cloud_provider'
-require 'fog/digitalocean/compute_v2'
 require 'fog'
+require 'fog/digitalocean'
+
 class DigitalOcean < CloudProvider
 
   def initialize
@@ -17,12 +18,25 @@ class DigitalOcean < CloudProvider
 
   def create_node
     puts 'Creating node...'
-    @connection.servers.create({:name => get_node_name, :image => get_image, :size => get_size, :region => get_region})
+    server = @connection.servers.create({:name => get_node_name, :image => get_image, :size => get_size, :region => get_region, :private_key_path => '~/.ssh/id_rsa', :public_key_path => '~/.ssh/id_rsa.pub', :username => 'ubuntu', :password=> ''})
+    server.wait_for { ready? }
+    puts server.public_ip_address
+
+    host = server.public_ip_address
+    user = 'ubuntu'
+    pass = 'password'
+
+    Net::SSH.start(host, user, :password => pass) do |ssh|
+      puts ssh.exec!('sudo apt-get update')
+      puts ssh.exec!('sudo apt-get install maven git openjdk-7-jdk -y')
+      puts ssh.exec!('sudo git clone https://github.com/ewolff/user-registration.git /home/app/')
+      puts ssh.exec!('sudo mvn -f /home/app/user-registration-application/pom.xml spring-boot:run')
+    end
     puts 'done.'
   end
 
   def get_image
-    @connection.images[1].id
+    id = 16082940 # Ubuntu 14.04
   end
 
   def get_size

@@ -7,5 +7,7 @@ gem 'fog-aws'
 gem 'fog-google'
 gem 'google-api-client'
 gem 'fog-profitbricks'
+gem 'net-ssh'
+gem 'net-ssh-telnet'
 
 # gem "rails"

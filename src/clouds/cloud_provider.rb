@@ -1,3 +1,9 @@
+require 'net/ssh'
+require 'net/ssh/telnet'
+require 'fog/google'
+require 'fog/google/compute'
+require 'fog'
+
 class CloudProvider
 
   @user
@@ -37,7 +43,7 @@ class CloudProvider
     begin
       puts 'Nodes:'
       for server in @connection.servers
-        puts '  ' + server.id.to_s
+        puts server.id.to_s + ':  ' + server.public_ip_address.to_s
       end
     rescue NameError
       puts 'Cannot list nodes'
