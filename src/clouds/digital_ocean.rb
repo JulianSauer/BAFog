@@ -5,22 +5,13 @@ require 'fog/digitalocean'
 class DigitalOcean < CloudProvider
 
   def initialize
-    super('doUser', 'doPassword', 'DigitalOcean')
-  end
-
-  def get_connection
-    @connection = Fog::Compute.new({
-                                       :provider => 'DigitalOcean',
-                                       :version => 'V2',
-                                       :digitalocean_token => '2f1573cb2355bf24e27460831b5f8b901e3bb6197f0b11d6ba78e98d22b0b0a1',
-                                   })
+    super('doUser', 'doPassword')
   end
 
   def create_node
     puts 'Creating node...'
-    server = @connection.servers.create({:name => get_node_name, :image => get_image, :size => get_size, :region => get_region, :private_key_path => '~/.ssh/id_rsa', :public_key_path => '~/.ssh/id_rsa.pub', :username => 'ubuntu', :password=> ''})
-    server.wait_for { ready? }
-    puts server.public_ip_address
+    server = @connection.servers.create({:name => get_node_name, :image => get_image, :size => get_size, :region => get_region, :private_key_path => '~/.ssh/id_rsa', :public_key_path => '~/.ssh/id_rsa.pub', :username => 'ubuntu', :password => ''})
+    server.wait_for { ready? } # Not working as expected
 
     host = server.public_ip_address
     user = 'ubuntu'
@@ -33,6 +24,14 @@ class DigitalOcean < CloudProvider
       puts ssh.exec!('sudo mvn -f /home/app/user-registration-application/pom.xml spring-boot:run')
     end
     puts 'done.'
+  end
+
+  def get_connection
+    @connection = Fog::Compute.new({
+                                       :provider => 'DigitalOcean',
+                                       :version => 'V2',
+                                       :digitalocean_token => '2f1573cb2355bf24e27460831b5f8b901e3bb6197f0b11d6ba78e98d22b0b0a1',
+                                   })
   end
 
   def get_image

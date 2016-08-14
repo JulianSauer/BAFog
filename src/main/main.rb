@@ -7,19 +7,10 @@ require '../../src/clouds/profit_bricks'
 class Main
 
   def run
-    test(AmazonWebServices.new)
-    test(DigitalOcean.new)
-    test(GoogleComputeEngine.new)
-    test(ProfitBricks.new)
-  end
-
-  def test(cloud)
-    puts cloud.to_s
-    cloud.destroy_nodes
-    cloud.list_nodes
-    cloud.create_node
-    cloud.list_nodes
-    puts ''
+    AmazonWebServices.new.do_test_operations
+    DigitalOcean.new.do_test_operations
+    GoogleComputeEngine.new.do_test_operations
+    ProfitBricks.new.do_test_operations
   end
 
 end

@@ -4,19 +4,10 @@ require 'fog/aws'
 class AmazonWebServices < CloudProvider
 
   def initialize
-    super('awsUser', 'awsPassword', 'AWS')
-  end
-
-  def get_connection
-    @connection = Fog::Compute.new({
-                                       :provider => @provider,
-                                       :aws_access_key_id => @user,
-                                       :aws_secret_access_key => @password
-                                   })
+    super('awsUser', 'awsPassword')
   end
 
   def create_node
-    #server = @connection = Fog::Compute.new({:provider => @provider, :aws_access_key_id => @user, :aws_secret_access_key => @password})
     server = @connection.servers.bootstrap(:image_id => 'ami-fc2a2a94', :private_key_path => '~/.ssh/id_rsa', :public_key_path => '~/.ssh/id_rsa.pub', :username => 'ubuntu')
 
     host = server.public_ip_address
@@ -32,4 +23,13 @@ class AmazonWebServices < CloudProvider
     end
 
   end
+
+  def get_connection
+    @connection = Fog::Compute.new({
+                                       :provider => 'AWS',
+                                       :aws_access_key_id => @user,
+                                       :aws_secret_access_key => @password
+                                   })
+  end
+
 end
