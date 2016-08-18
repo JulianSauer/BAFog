@@ -14,7 +14,7 @@ class ProfitBricks < CloudProvider
     server.wait_for { ready? }
 
     image = @connection.images.all.find { |image| image.name =~ /Ubuntu-14.04/ && image.type == "HDD" && image.region == "us/fra" }
-    volume = @connection.volumes.create(:data_center_id => datacenter.id, :size => 50, :options => { :storageName => 'FogVolume', :mountImageId => image.id })
+    volume = @connection.volumes.create(:data_center_id => datacenter.id, :size => 50, :options => {:storageName => 'FogVolume', :mountImageId => image.id})
     volume.wait_for { ready? }
     volume.attach(server.id)
     server.wait_for { ready? }

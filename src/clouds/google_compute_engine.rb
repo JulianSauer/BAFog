@@ -10,26 +10,16 @@ class GoogleComputeEngine < CloudProvider
     puts 'Creating node...'
     disk = get_disk
     disk.wait_for { ready? }
-    server = @connection.servers.bootstrap(:name => get_node_name,
-                                           :machine_type => 'f1-micro',
-                                           :zone_name => 'us-central1-a',
-                                           :disks => [disk.get_as_boot_disk],
+
+    username = 'ubuntu'
+    server = @connection.servers.bootstrap(:name => get_node_name, :machine_type => 'f1-micro',
+                                           :zone_name => 'us-central1-a', :disks => [disk.get_as_boot_disk],
                                            :private_key_path => '~/.ssh/id_rsa',
                                            :public_key_path => '~/.ssh/id_rsa.pub',
-                                           :username => 'ubuntu')
+                                           :username => username)
 
     host = server.public_ip_address
-    user = 'ubuntu'
-    pass = ''
-
-    Net::SSH.start(host, user, :password => pass) do |ssh|
-      puts ssh.exec!('sudo apt-get update')
-      puts ssh.exec!('sudo apt-get install maven git openjdk-7-jdk -y')
-      puts ssh.exec!('sudo git clone https://github.com/ewolff/user-registration.git /home/app/')
-      puts ssh.exec!('sudo mvn -f /home/app/user-registration-application/pom.xml clean package') # spring-boot:run not working
-      puts ssh.exec!('java -jar /home/app/user-registration-application/target/user-registration-application-0.0.1-SNAPSHOT.war')
-    end
-
+    init_script(host, username)
     puts 'done.'
   end
 
