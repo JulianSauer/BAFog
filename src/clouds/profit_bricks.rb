@@ -7,6 +7,8 @@ class ProfitBricks < CloudProvider
     super('pbUser', 'pbPassword')
   end
 
+  private
+
   def create_node
     puts 'Creating node...'
     datacenter = @connection.datacenters.all.find { |dc| dc.name == 'fog' }

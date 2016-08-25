@@ -6,9 +6,16 @@ class GoogleComputeEngine < CloudProvider
     super('gceUser', 'gcePassword')
   end
 
+  private
+
   def create_node
     puts 'Creating node...'
-    disk = get_disk
+
+    disk = @connection.disks.create({
+                                        :name => get_node_name,
+                                        :zone_name => "us-central1-a",
+                                        :size_gb => 10,
+                                        :source_image => "ubuntu-1404-trusty-v20150316"})
     disk.wait_for { ready? }
 
     username = 'ubuntu'
@@ -30,14 +37,6 @@ class GoogleComputeEngine < CloudProvider
                                        :google_client_email => @user,
                                        :google_json_key_location => @password
                                    })
-  end
-
-  def get_disk
-    @connection.disks.create({
-                                 :name => get_node_name,
-                                 :zone_name => "us-central1-a",
-                                 :size_gb => 10,
-                                 :source_image => "ubuntu-1404-trusty-v20150316"})
   end
 
 end

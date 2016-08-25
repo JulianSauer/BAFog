@@ -8,9 +8,9 @@ class Main
 
   def run
     AmazonWebServices.new.do_test_operations
-    DigitalOcean.new.do_test_operations
-    GoogleComputeEngine.new.do_test_operations
-    ProfitBricks.new.do_test_operations
+    #DigitalOcean.new.do_test_operations
+    #GoogleComputeEngine.new.do_test_operations
+    #ProfitBricks.new.do_test_operations
   end
 
 end

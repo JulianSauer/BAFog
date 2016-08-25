@@ -18,6 +18,19 @@ class CloudProvider
     @connection = get_connection
   end
 
+  def do_test_operations()
+    puts 'Removing all nodes...'
+    destroy_nodes
+    puts 'done.'
+    list_nodes
+    puts 'Adding a node...'
+    create_node
+    puts 'done'
+    list_nodes
+  end
+
+  private
+
   def create_node
     puts 'Not implemented'
   end
@@ -30,17 +43,6 @@ class CloudProvider
     rescue NoMethodError, NameError
       puts 'Cannot delete nodes'
     end
-  end
-
-  def do_test_operations()
-    puts 'Removing all nodes...'
-    destroy_nodes
-    puts 'done.'
-    list_nodes
-    puts 'Adding a node...'
-    create_node
-    puts 'done'
-    list_nodes
   end
 
   def get_connection

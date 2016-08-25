@@ -8,15 +8,26 @@ class DigitalOcean < CloudProvider
     super('doUser', 'doPassword')
   end
 
+  private
+
   def create_node
     puts 'Creating node...'
+
     image = 0
     @connection.images.each do |i|
       if i.name.include? '1404'
         image = i.id
       end
     end
-    @connection.servers.create({:name => get_node_name, :image => image, :size => get_size,
+
+    size = ''
+    connection.flavors.each do |s|
+      if s.slug.eql? '512mb'
+        size = s.slug
+      end
+    end
+
+    @connection.servers.create({:name => get_node_name, :image => image, :size => size,
                                 :region => @connection.regions.first.slug})
     puts 'done.'
   end
@@ -27,14 +38,6 @@ class DigitalOcean < CloudProvider
                                        :version => 'V2',
                                        :digitalocean_token => '2f1573cb2355bf24e27460831b5f8b901e3bb6197f0b11d6ba78e98d22b0b0a1',
                                    })
-  end
-
-  def get_size
-    @connection.flavors.each do |size|
-      if size.slug.eql? '512mb'
-        return size.slug
-      end
-    end
   end
 
 end

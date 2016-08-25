@@ -7,6 +7,8 @@ class AmazonWebServices < CloudProvider
     super('awsUser', 'awsPassword')
   end
 
+  private
+
   def create_node
     puts 'Creating node...'
     username = 'ubuntu'
